@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Nexus Digital | Acessibilidade clara e intuitiva</title>
+    <meta name="description" content="Soluções digitais com acessibilidade integrada, design moderno e foco em resultados.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #8b5cf6;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            --bg-body: #ffffff;
+            --bg-card: #ffffff;
+            --bg-menu: rgba(255, 255, 255, 0.95);
+            --text-body: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #eef2ff;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            --radius: 1rem;
+            --transition: all 0.2s ease;
+            --header-height: 80px; /* fallback, será atualizado via JS se necessário */
+        }
+
+        /* TEMA ESCURO */
+        body.dark {
+            --primary: #818cf8;
+            --primary-dark: #6366f1;
+            --gray-50: #0f172a;
+            --gray-100: #1e293b;
+            --gray-200: #334155;
+            --gray-600: #94a3b8;
+            --gray-700: #cbd5e1;
+            --gray-800: #f1f5f9;
+            --gray-900: #f8fafc;
+            --bg-body: #0f172a;
+            --bg-card: #1e293b;
+            --bg-menu: rgba(15, 23, 42, 0.95);
+            --text-body: #e2e8f0;
+            --text-muted: #cbd5e1;
+            --border-color: #334155;
+        }
+
+        /* ALTO CONTRASTE (estático) */
+        body.high-contrast {
+            --primary: #ffff00;
+            --primary-dark: #ffcc00;
+            --primary-light: #ffff66;
+            --secondary: #ffff00;
+            --bg-body: #000000;
+            --bg-card: #111111;
+            --bg-menu: #000000;
+            --text-body: #ffffff;
+            --text-muted: #eeeeee;
+            --border-color: #ffffff;
+            --gray-100: #222222;
+        }
+        body.high-contrast .card,
+        body.high-contrast .access-group,
+        body.high-contrast input,
+        body.high-contrast textarea,
+        body.high-contrast select {
+            border-color: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-body);
+            color: var(--text-body);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.2s;
+            font-size: 1rem; /* base para escalar com rem */
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* ===== HEADER (sticky apenas no header) ===== */
+        header {
+            background: var(--bg-menu);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            padding: 0.8rem 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            cursor: pointer;
+        }
+
+        /* grupo de acessibilidade */
+        .access-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            background: var(--bg-card);
+            padding: 0.4rem 0.8rem;
+            border-radius: 3rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .access-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            border-radius: 2rem;
+            background: transparent;
+            border: 1px solid transparent;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: var(--transition);
+            color: var(--text-muted);
+        }
+
+        .access-btn i {
+            font-size: 0.9rem;
+        }
+
+        .access-btn:hover,
+        .access-btn:focus-visible {
+            background: var(--gray-100);
+            color: var(--primary);
+            border-color: var(--border-color);
+        }
+
+        .access-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* ===== NAVEGAÇÃO (sem sticky para evitar conflitos) ===== */
+        nav {
+            background: var(--bg-menu);
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+            z-index: 49;
+        }
+
+        nav ul {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            list-style: none;
+            padding: 0.75rem 0;
+            justify-content: center;
+        }
+
+        nav ul li a {
+            display: inline-block;
+            padding: 0.6rem 1.4rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--gray-600);
+            border-radius: 2rem;
+            transition: var(--transition);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        nav ul li a:hover,
+        nav ul li a:focus-visible {
+            background: var(--primary-light);
+            color: white;
+        }
+
+        nav ul li a.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 3rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        /* ===== GRIDS E CARDS ===== */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 1.8rem;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .depoimentos-grid,
+        .clientes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        /* ===== FORMULÁRIOS ===== */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            font-weight: 500;
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 0.8rem;
+            color: var(--text-body);
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: var(--gray-900);
+            margin-top: 4rem;
+            padding: 3rem 0 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-icons a {
+            background: var(--gray-800);
+            width: 36px;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: var(--gray-600);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social-icons a:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.8rem;
+        }
+
+        /* ===== SPA PAGES ===== */
+        .page {
+            display: none;
+        }
+
+        .page.active-page {
+            display: block;
+        }
+
+        /* ===== RESPONSIVIDADE ===== */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1.25rem;
+            }
+
+            .header-content {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .access-group {
+                justify-content: center;
+            }
+
+            .access-btn {
+                padding: 0.3rem 0.7rem;
+                font-size: 0.7rem;
+            }
+
+            nav ul li a {
+                padding: 0.4rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* ===== ACESSIBILIDADE GLOBAL ===== */
+        :focus-visible {
+            outline: 3px solid var(--primary);
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        /* modo foco destacado (ativado pelo botão) */
+        body.focus-highlight :focus-visible {
+            outline: 4px solid #ffcc00 !important;
+            outline-offset: 4px !important;
+        }
+
+        /* remove animações para quem prefere reduzir movimento */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <div class="header-content">
+            <div class="logo" id="homeLink" tabindex="0" role="button" aria-label="Ir para página inicial">✦ NexusDigital</div>
+            <div class="access-group" role="group" aria-label="Ferramentas de acessibilidade">
+                <button class="access-btn" id="themeToggle" aria-label="Alternar modo claro/escuro"><i class="fas fa-moon"></i> <span>Modo claro/escuro</span></button>
+                <button class="access-btn" id="highContrast" aria-label="Ativar alto contraste"><i class="fas fa-adjust"></i> <span>Alto contraste</span></button>
+                <button class="access-btn" id="increaseFont" aria-label="Aumentar tamanho da fonte"><i class="fas fa-text-height"></i> <span>Aumentar texto</span></button>
+                <button class="access-btn" id="resetFont" aria-label="Resetar tamanho da fonte"><i class="fas fa-undo-alt"></i> <span>Fonte padrão</span></button>
+                <button class="access-btn" id="focusMode" aria-label="Destacar foco do teclado"><i class="fas fa-keyboard"></i> <span>Destacar foco</span></button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<nav aria-label="Menu principal">
+    <div class="container">
+        <ul>
+            <li><a data-page="home" class="nav-link active" aria-current="page">HOME</a></li>
+            <li><a data-page="produtos" class="nav-link">PRODUTOS</a></li>
+            <li><a data-page="servicos" class="nav-link">SERVIÇOS</a></li>
+            <li><a data-page="depoimentos" class="nav-link">DEPOIMENTOS</a></li>
+            <li><a data-page="clientes" class="nav-link">CLIENTES</a></li>
+            <li><a data-page="orcamento" class="nav-link">ORÇAMENTOS</a></li>
+            <li><a data-page="contato" class="nav-link">CONTATO</a></li>
+        </ul>
+    </div>
+</nav>
+
+<main>
+    <!-- PÁGINA HOME -->
+    <section id="home" class="page active-page">
+        <div style="background: linear-gradient(125deg, var(--gray-100), var(--bg-body)); padding: 4rem 0; text-align: center;">
+            <div class="container">
+                <h1 style="font-size: 2.8rem; font-weight: 800; background: linear-gradient(135deg, var(--gray-900), var(--primary)); background-clip: text; -webkit-background-clip: text; color: transparent;">Transformando ideias em soluções digitais</h1>
+                <p style="margin: 1rem 0 2rem; color: var(--text-muted);">+350 projetos entregues · +120 clientes ativos · 98% satisfação</p>
+                <button class="btn-primary" data-page="orcamento" aria-label="Solicitar orçamento"><i class="fas fa-rocket"></i> Começar projeto</button>
+            </div>
+        </div>
+        <div class="container">
+            <div class="stats-grid">
+                <div class="card"><div class="stat-number">350+</div><div>Projetos entregues</div></div>
+                <div class="card"><div class="stat-number">120+</div><div>Clientes ativos</div></div>
+                <div class="card"><div class="stat-number">98%</div><div>Satisfação</div></div>
+                <div class="card"><div class="stat-number">24/7</div><div>Suporte</div></div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin: 3rem 0;">
+                <div>
+                    <h2>Sobre a Nexus</h2>
+                    <p>Fundada em 2018, geramos <strong>R$ 12,5 milhões</strong> em faturamento para clientes. Equipe de 45 especialistas, prêmio "Agência do Ano 2025".</p>
+                    <p><i class="fas fa-check-circle" style="color:var(--primary);"></i> +350 projetos<br><i class="fas fa-check-circle" style="color:var(--primary);"></i> Inovação certificada</p>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-crown"></i> Diferenciais</h3>
+                    <ul style="margin-top: 1rem; list-style: none;">
+                        <li>✓ Código limpo e otimizado</li>
+                        <li>✓ Responsividade total</li>
+                        <li>✓ Suporte contínuo pós-entrega</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUTOS -->
+    <section id="produtos" class="page">
+        <div class="container">
+            <h1>Nossos Produtos</h1>
+            <div class="grid-3">
+                <div class="card"><i class="fas fa-store fa-2x" style="color:var(--primary);"></i><h3>E-commerce Nexus</h3><p>Plataforma completa de vendas online, gestão de estoque e integração com marketplaces.</p><strong>R$ 9.900</strong></div>
+                <div class="card"><i class="fas fa-chalkboard-user fa-2x" style="color:var(--primary);"></i><h3>Nexus LMS</h3><p>Sistema de gestão de aprendizagem para escolas e empresas.</p><strong>Sob consulta</strong></div>
+                <div class="card"><i class="fas fa-chart-simple fa-2x" style="color:var(--primary);"></i><h3>Painel BI</h3><p>Dashboards interativos com inteligência de negócios.</p><strong>R$ 4.500/mês</strong></div>
+                <div class="card"><i class="fas fa-calendar-check fa-2x" style="color:var(--primary);"></i><h3>Agendamento Pro</h3><p>Sistema de reservas para clínicas e serviços.</p><strong>R$ 2.490</strong></div>
+                <div class="card"><i class="fas fa-robot fa-2x" style="color:var(--primary);"></i><h3>Chatbot IA</h3><p>Assistente virtual inteligente para WhatsApp e site.</p><strong>R$ 1.200/mês</strong></div>
+                <!-- CORREÇÃO: ícone válido -->
+                <div class="card"><i class="fas fa-shield-alt fa-2x" style="color:var(--primary);"></i><h3>Security Shield</h3><p>Proteção contra ataques DDoS e firewall de aplicação.</p><strong>R$ 2.800/mês</strong></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVIÇOS -->
+    <section id="servicos" class="page">
+        <div class="container">
+            <h1>Serviços especializados</h1>
+            <div class="grid-3">
+                <div class="card"><i class="fas fa-laptop-code fa-2x" style="color:var(--primary);"></i><h3>Desenvolvimento Web</h3><p>Sites institucionais, lojas virtuais e aplicações sob medida.</p><strong>R$ 5.000+</strong></div>
+                <div class="card"><i class="fas fa-chart-line fa-2x" style="color:var(--primary);"></i><h3>SEO & Marketing</h3><p>Otimização para buscadores, tráfego pago e conteúdo.</p><strong>R$ 2.500/mês</strong></div>
+                <div class="card"><i class="fas fa-cloud-arrow-up fa-2x" style="color:var(--primary);"></i><h3>Cloud & DevOps</h3><p>Migração para nuvem, CI/CD e monitoramento 24/7.</p><strong>Sob consulta</strong></div>
+                <div class="card"><i class="fas fa-pen-ruler fa-2x" style="color:var(--primary);"></i><h3>UI/UX Design</h3><p>Pesquisa de experiência, prototipagem e design de interfaces.</p><strong>R$ 8.500/projeto</strong></div>
+                <div class="card"><i class="fas fa-database fa-2x" style="color:var(--primary);"></i><h3>Análise de Dados</h3><p>Data warehousing, modelos preditivos e dashboards.</p><strong>R$ 12.000/mês</strong></div>
+                <div class="card"><i class="fas fa-headset fa-2x" style="color:var(--primary);"></i><h3>Suporte Técnico</h3><p>Planos de manutenção com SLA garantido.</p><strong>R$ 990/mês</strong></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DEPOIMENTOS -->
+    <section id="depoimentos" class="page">
+        <div class="container">
+            <h1>Depoimentos de clientes</h1>
+            <div class="depoimentos-grid">
+                <div class="card"><i class="fas fa-quote-left" style="color:var(--primary);"></i><p>"A Nexus transformou nossa presença digital. Vendas online cresceram 140% em 6 meses."</p><strong>— Marina Costa, CMO VivaModa</strong></div>
+                <div class="card"><i class="fas fa-quote-left" style="color:var(--primary);"></i><p>"Reduzimos custos operacionais em 30% com a automação proposta pela Nexus."</p><strong>— Rafael Lima, CEO LogiFácil</strong></div>
+                <div class="card"><i class="fas fa-quote-left" style="color:var(--primary);"></i><p>"Design moderno e alta performance. Nosso site ficou entre os mais rápidos do setor."</p><strong>— Fernanda Alves, Diretora EduTech</strong></div>
+                <div class="card"><i class="fas fa-quote-left" style="color:var(--primary);"></i><p>"Implementaram nosso ERP em tempo recorde com zero downtime."</p><strong>— Carlos Mendes, CTO TechCorp</strong></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CLIENTES -->
+    <section id="clientes" class="page">
+        <div class="container">
+            <h1>Empresas que confiam na Nexus</h1>
+            <div class="clientes-grid">
+                <div class="card"><i class="fas fa-building"></i> <h3>TechCorp</h3></div>
+                <div class="card"><i class="fas fa-leaf"></i> <h3>GreenEnergy</h3></div>
+                <div class="card"><i class="fas fa-heartbeat"></i> <h3>Saúde+</h3></div>
+                <div class="card"><i class="fas fa-truck"></i> <h3>FastLog</h3></div>
+                <div class="card"><i class="fas fa-graduation-cap"></i> <h3>EducaBrasil</h3></div>
+                <div class="card"><i class="fas fa-chart-line"></i> <h3>FinanZero</h3></div>
+            </div>
+            <p style="text-align:center; margin: 2rem 0;">+120 clientes ativos em 12 países. Torne-se um deles!</p>
+        </div>
+    </section>
+
+    <!-- ORÇAMENTO -->
+    <section id="orcamento" class="page">
+        <div class="container">
+            <h1>Solicite um orçamento</h1>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                <form id="orcForm" action="#" method="post">
+                    <div class="form-group"><label for="nomeOrc">Nome completo *</label><input type="text" id="nomeOrc" name="nome" placeholder="Seu nome" required></div>
+                    <div class="form-group"><label for="emailOrc">E-mail *</label><input type="email" id="emailOrc" name="email" placeholder="contato@empresa.com" required></div>
+                    <div class="form-group"><label for="telOrc">Telefone</label><input type="tel" id="telOrc" name="telefone" placeholder="(85) 99999-9999"></div>
+                    <div class="form-group"><label for="servicoOrc">Serviço de interesse</label><select id="servicoOrc" name="servico"><option>Web Design</option><option>E-commerce</option><option>Marketing Digital</option><option>Consultoria</option></select></div>
+                    <div class="form-group"><label for="msgOrc">Mensagem / detalhes</label><textarea id="msgOrc" name="mensagem" rows="3" placeholder="Descreva seu projeto..."></textarea></div>
+                    <button type="button" class="btn-primary" id="orcDemoBtn"><i class="fas fa-paper-plane"></i> Enviar simulação (demo)</button>
+                </form>
+                <div class="card"><h3>Informações importantes</h3><p>✔️ Retorno em até 24h úteis</p><p>✔️ Proposta personalizada sem compromisso</p><p>✔️ Atendimento prioritário para empresas</p><h3 style="margin-top:1rem;">Atendimento rápido:</h3><p><i class="fas fa-phone-alt"></i> (85) 99999-9999</p><p><i class="fab fa-whatsapp"></i> (85) 98888-7777</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTATO -->
+    <section id="contato" class="page">
+        <div class="container">
+            <h1>Fale conosco</h1>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+                <div>
+                    <p><i class="fas fa-map-pin"></i> <strong>Endereço:</strong> Av. Dom Luís, 1230 - Sala 901, Fortaleza/CE</p>
+                    <p><i class="fas fa-phone-alt"></i> <strong>Telefone:</strong> (85) 99999-9999</p>
+                    <p><i class="fab fa-whatsapp"></i> <strong>WhatsApp:</strong> (85) 98888-7777</p>
+                    <p><i class="fas fa-envelope"></i> <strong>E-mail:</strong> contato@nexusdigital.com</p>
+                    <p><strong>Horário:</strong> Seg–Sex, 9h às 18h</p>
+                    <div class="social-icons">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <form id="contactForm" action="#" method="post">
+                    <div class="form-group"><label for="nomeContato">Nome *</label><input type="text" id="nomeContato" name="nome" required></div>
+                    <div class="form-group"><label for="emailContato">E-mail *</label><input type="email" id="emailContato" name="email" required></div>
+                    <div class="form-group"><label for="msgContato">Mensagem *</label><textarea id="msgContato" name="mensagem" rows="4" required></textarea></div>
+                    <button type="button" class="btn-primary" id="contactDemoBtn"><i class="fas fa-envelope"></i> Enviar mensagem (demo)</button>
+                </form>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="container">
+        <div class="footer-grid">
+            <div><strong>NexusDigital</strong><p>Tecnologia que conecta ideias ao futuro.</p><div class="social-icons"><a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a><a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a></div></div>
+            <div><strong>Contato</strong><p><i class="fas fa-envelope"></i> contato@nexusdigital.com</p><p><i class="fas fa-phone-alt"></i> (85) 99999-9999</p></div>
+            <div><strong>Localização</strong><p>Fortaleza - CE, Brasil</p><p>© 2026 NexusDigital</p></div>
+        </div>
+        <div class="copyright">Dados fictícios para demonstração. Acessibilidade integrada.</div>
+    </div>
+</footer>
+
+<script>
+    (function() {
+        // ==================== SPA NAVEGAÇÃO (sem duplicidade) ====================
+        const pages = document.querySelectorAll('.page');
+        const navTriggers = document.querySelectorAll('[data-page]'); // unifica todos os elementos que trocam página
+        const homeLogo = document.getElementById('homeLink');
+
+        function showPage(pageId) {
+            const targetPage = document.getElementById(pageId);
+            if (!targetPage) return;
+
+            pages.forEach(p => p.classList.remove('active-page'));
+            targetPage.classList.add('active-page');
+
+            // atualiza classe active nos links e aria-current
+            navTriggers.forEach(trigger => {
+                const triggerPage = trigger.getAttribute('data-page');
+                if (triggerPage === pageId) {
+                    trigger.classList.add('active');
+                    if (trigger.tagName === 'A') trigger.setAttribute('aria-current', 'page');
+                } else {
+                    trigger.classList.remove('active');
+                    if (trigger.tagName === 'A') trigger.removeAttribute('aria-current');
+                }
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            localStorage.setItem('currentPage', pageId);
+        }
+
+        // evento único para todos os elementos com data-page
+        navTriggers.forEach(trigger => {
+            trigger.addEventListener('click', (e) => {
+                e.preventDefault();
+                const pageId = trigger.getAttribute('data-page');
+                if (pageId) showPage(pageId);
+            });
+        });
+
+        // logo também navega para home
+        if (homeLogo) {
+            homeLogo.addEventListener('click', () => showPage('home'));
+            homeLogo.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') showPage('home'); });
+        }
+
+        // restaura página salva
+        const savedPage = localStorage.getItem('currentPage');
+        if (savedPage && document.getElementById(savedPage)) showPage(savedPage);
+        else showPage('home');
+
+        // ==================== ACESSIBILIDADE ====================
+        const body = document.body;
+
+        // 1. Tema claro/escuro
+        const themeBtn = document.getElementById('themeToggle');
+        function setTheme(isDark) {
+            if (isDark) body.classList.add('dark');
+            else body.classList.remove('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            if (themeBtn) {
+                themeBtn.classList.toggle('active', isDark);
+                const icon = themeBtn.querySelector('i');
+                if (icon) {
+                    if (isDark) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); }
+                    else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); }
+                }
+            }
+        }
+        setTheme(localStorage.getItem('theme') === 'dark');
+        themeBtn?.addEventListener('click', () => setTheme(!body.classList.contains('dark')));
+
+        // 2. Alto contraste (agora usando classe CSS estática)
+        const highBtn = document.getElementById('highContrast');
+        function setHighContrast(active) {
+            if (active) body.classList.add('high-contrast');
+            else body.classList.remove('high-contrast');
+            localStorage.setItem('highContrast', active);
+            highBtn?.classList.toggle('active', active);
+        }
+        setHighContrast(localStorage.getItem('highContrast') === 'true');
+        highBtn?.addEventListener('click', () => setHighContrast(!body.classList.contains('high-contrast')));
+
+        // 3. Aumentar / resetar fonte (em rem, respeita escala)
+        const incBtn = document.getElementById('increaseFont');
+        const resetBtn = document.getElementById('resetFont');
+        incBtn?.addEventListener('click', () => {
+            let cur = parseFloat(getComputedStyle(body).fontSize);
+            if (cur < 28) body.style.fontSize = (cur + 2) + 'px';
+        });
+        resetBtn?.addEventListener('click', () => body.style.fontSize = '');
+
+        // 4. Modo foco destacado (usa classe CSS global)
+        const focusBtn = document.getElementById('focusMode');
+        function setFocusHighlight(active) {
+            if (active) body.classList.add('focus-highlight');
+            else body.classList.remove('focus-highlight');
+            focusBtn?.classList.toggle('active', active);
+            localStorage.setItem('focusMode', active);
+        }
+        setFocusHighlight(localStorage.getItem('focusMode') === 'true');
+        focusBtn?.addEventListener('click', () => setFocusHighlight(!body.classList.contains('focus-highlight')));
+
+        // ==================== FORMULÁRIOS DEMO COM VALIDAÇÃO ====================
+        const orcBtn = document.getElementById('orcDemoBtn');
+        const contactBtn = document.getElementById('contactDemoBtn');
+
+        function validateForm(formElement) {
+            let isValid = true;
+            const required = formElement.querySelectorAll('[required]');
+            required.forEach(field => {
+                if (!field.value.trim()) {
+                    field.style.borderColor = 'red';
+                    isValid = false;
+                } else {
+                    field.style.borderColor = '';
+                }
+            });
+            return isValid;
+        }
+
+        if (orcBtn) {
+            orcBtn.addEventListener('click', () => {
+                const form = document.getElementById('orcForm');
+                if (validateForm(form)) {
+                    alert('📩 Simulação de orçamento recebida (demonstração). Em ambiente real, os dados seriam enviados para nosso CRM.');
+                } else {
+                    alert('❌ Preencha todos os campos obrigatórios (marcados com *).');
+                }
+            });
+        }
+
+        if (contactBtn) {
+            contactBtn.addEventListener('click', () => {
+                const form = document.getElementById('contactForm');
+                if (validateForm(form)) {
+                    alert('📧 Mensagem de contato (demonstração). Em produção, um e-mail seria disparado para nossa equipe.');
+                } else {
+                    alert('❌ Por favor, preencha nome, e-mail e mensagem.');
+                }
+            });
+        }
+
+        console.log('✅ Site profissionalizado com acessibilidade integrada e navegação sem duplicidades');
+    })();
+</script>
+</body>
+</html>
